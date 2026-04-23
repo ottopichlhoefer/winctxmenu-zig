@@ -14,6 +14,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Zig
         uses: mlugg/setup-zig@v2
@@ -25,10 +27,12 @@ jobs:
         run: zig build -Doptimize=ReleaseSafe
 
       - name: Compute SHA256 sidecar
+        id: hash
         shell: pwsh
         run: |
           $hash = (Get-FileHash zig-out/bin/winctxmenu.exe -Algorithm SHA256).Hash.ToLower()
           "$hash  winctxmenu.exe" | Out-File -Encoding ascii -NoNewline zig-out/bin/winctxmenu.exe.sha256
+          "hash=$hash" | Out-File -Encoding ascii -Append $env:GITHUB_OUTPUT
           Write-Host "SHA256: $hash"
 
       - name: Create GitHub Release
@@ -38,3 +42,33 @@ jobs:
             zig-out/bin/winctxmenu.exe
             zig-out/bin/winctxmenu.exe.sha256
           generate_release_notes: true
+
+      - name: Sync Scoop manifest on master
+        shell: pwsh
+        env:
+          NEW_VERSION: ${{ github.ref_name }}
+          NEW_HASH: ${{ steps.hash.outputs.hash }}
+        run: |
+          $ver = $env:NEW_VERSION -replace '^v',''
+          $hash = $env:NEW_HASH
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin master:master
+          git checkout master
+
+          $path = 'scoop/winctxmenu.json'
+          $manifest = Get-Content $path -Raw | ConvertFrom-Json
+          $manifest.version = $ver
+          $manifest.architecture.'64bit'.url  = "https://github.com/${{ github.repository }}/releases/download/v$ver/winctxmenu.exe"
+          $manifest.architecture.'64bit'.hash = "sha256:$hash"
+          ($manifest | ConvertTo-Json -Depth 10) + "`n" | Set-Content $path -NoNewline
+
+          git add $path
+          git diff --cached --quiet
+          if ($LASTEXITCODE -ne 0) {
+            git commit -m "chore(scoop): sync manifest to v$ver [skip ci]"
+            git push origin master
+          } else {
+            Write-Host "Manifest already current, no commit"
+          }
