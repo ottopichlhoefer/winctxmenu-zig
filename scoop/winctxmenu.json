@@ -1,26 +1,26 @@
 {
-    "version": "0.1.0",
-    "description": "Native Windows Explorer context menu CLI — for Emacs Dired integration.",
-    "homepage": "https://github.com/ottopichlhoefer/winctxmenu-zig",
-    "license": "MIT",
-    "architecture": {
-        "64bit": {
-            "url": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v0.1.0/winctxmenu.exe",
-            "hash": "sha256:f4eb3175f61b43d617e9457d9e583a8345fa8bbf66754bbc876cad7686c0511b"
-        }
-    },
-    "bin": "winctxmenu.exe",
-    "checkver": {
-        "github": "https://github.com/ottopichlhoefer/winctxmenu-zig"
-    },
-    "autoupdate": {
-        "architecture": {
-            "64bit": {
-                "url": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v$version/winctxmenu.exe",
-                "hash": {
-                    "url": "$url.sha256"
-                }
-            }
-        }
+  "version": "0.1.1",
+  "description": "Native Windows Explorer context menu CLI — for Emacs Dired integration.",
+  "homepage": "https://github.com/ottopichlhoefer/winctxmenu-zig",
+  "license": "MIT",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v0.1.1/winctxmenu.exe",
+      "hash": "sha256:56a948a6fad2645c1c7a74ca08f70987f58c8d1e66ed8f79634309f2e9e0c6a7"
     }
+  },
+  "bin": "winctxmenu.exe",
+  "checkver": {
+    "github": "https://github.com/ottopichlhoefer/winctxmenu-zig"
+  },
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v$version/winctxmenu.exe",
+        "hash": {
+          "url": "$url.sha256"
+        }
+      }
+    }
+  }
 }
