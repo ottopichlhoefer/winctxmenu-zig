@@ -1,0 +1,26 @@
+{
+    "version": "0.1.0",
+    "description": "Native Windows Explorer context menu CLI — for Emacs Dired integration.",
+    "homepage": "https://github.com/ottopichlhoefer/winctxmenu-zig",
+    "license": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v0.1.0/winctxmenu.exe",
+            "hash": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v0.1.0/winctxmenu.exe.sha256"
+        }
+    },
+    "bin": "winctxmenu.exe",
+    "checkver": {
+        "github": "https://github.com/ottopichlhoefer/winctxmenu-zig"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v$version/winctxmenu.exe",
+                "hash": {
+                    "url": "$url.sha256"
+                }
+            }
+        }
+    }
+}

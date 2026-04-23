@@ -1,0 +1,40 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
+
+      - name: Build (ReleaseSafe, x86_64-windows)
+        shell: pwsh
+        run: zig build -Doptimize=ReleaseSafe
+
+      - name: Compute SHA256 sidecar
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash zig-out/bin/winctxmenu.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  winctxmenu.exe" | Out-File -Encoding ascii -NoNewline zig-out/bin/winctxmenu.exe.sha256
+          Write-Host "SHA256: $hash"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            zig-out/bin/winctxmenu.exe
+            zig-out/bin/winctxmenu.exe.sha256
+          generate_release_notes: true
