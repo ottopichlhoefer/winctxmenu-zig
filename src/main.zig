@@ -45,6 +45,16 @@ extern "advapi32" fn RegCloseKey(
     hKey: win.HKEY,
 ) callconv(.winapi) win.LSTATUS;
 
+// Per-monitor DPI awareness (Windows 10 1703+). The docs declare the parameter
+// as DPI_AWARENESS_CONTEXT — a DECLARE_HANDLE pseudo-pointer whose permitted
+// values are the negative integer constants -1..-5. Typed as isize here so we
+// can pass -4 (PER_MONITOR_AWARE_V2) directly.
+extern "user32" fn SetProcessDpiAwarenessContext(
+    value: isize,
+) callconv(.winapi) win.BOOL;
+
+const DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2: isize = -4;
+
 const Action = enum {
     show,
     install,
@@ -304,6 +314,11 @@ pub fn main() void {
 }
 
 fn run() !void {
+    // Declare per-monitor DPI awareness so x/y arguments are interpreted as
+    // physical screen pixels (matching what callers like Emacs report) rather
+    // than being auto-scaled by Windows from a virtualized 96-DPI space.
+    _ = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
