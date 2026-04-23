@@ -6,7 +6,7 @@
     "architecture": {
         "64bit": {
             "url": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v0.1.0/winctxmenu.exe",
-            "hash": "https://github.com/ottopichlhoefer/winctxmenu-zig/releases/download/v0.1.0/winctxmenu.exe.sha256"
+            "hash": "sha256:f4eb3175f61b43d617e9457d9e583a8345fa8bbf66754bbc876cad7686c0511b"
         }
     },
     "bin": "winctxmenu.exe",
